@@ -8,9 +8,20 @@ namespace DConExec
 {
     class Program
     {
+        
         static void Main(string[] args)
         {
-            Console.WriteLine("Welcome");
+            string Name;
+            string Surname;
+
+            Console.WriteLine("Welcome, type in your name and then your surname");
+
+            Name = Console.ReadLine();
+            Surname = Console.ReadLine();
+
+            Console.WriteLine(Name + " " +  Surname);
+            Console.WriteLine("Press any key to exit");
+            Console.ReadKey();
         }
     }
 }
