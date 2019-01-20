@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DConExec
@@ -16,10 +17,17 @@ namespace DConExec
 
         static void Main(string[] args)
         {
+            
+
+            
+
             Start();
             
             void Start()
             {
+
+
+
                 try
                 {
                     Console.WriteLine("What do you want to do?");
@@ -32,7 +40,7 @@ namespace DConExec
                         StartServer();
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.Clear();
                     Console.WriteLine("An error has occured");
@@ -69,38 +77,66 @@ namespace DConExec
                 Console.WriteLine("Received : " + dataReceived);
 
                 //---write back the text to the client---
-                Console.WriteLine("Sending back : " + Console.ReadLine());
-                nwStream.Write(buffer, 0, bytesRead);
-                client.Close();
-                listener.Stop();
-                Console.ReadLine();
+                bool keeponchatting = true;
+                while (keeponchatting)
+                {
+                    Console.WriteLine("Sending back : " + Console.ReadLine());
+                    nwStream.Write(buffer, 0, bytesRead);
+                }
+                //client.Close();
+                //listener.Stop();
+                
             }
 
             void Client()
             {
+                
+
                 Console.WriteLine("Starting up the client...");
                 //---data to send to the server---
-                string textToSend = Console.ReadLine();
+
 
                 //---create a TCPClient object at the IP and port no.---
                 TcpClient client = new TcpClient(SERVER_IP, PORT_NO);
                 NetworkStream nwStream = client.GetStream();
-                byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(textToSend);
 
-                //---send the text---
-                Console.WriteLine("Sending : " + textToSend);
-                nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+                //Thread thread = new Thread(ReadChatC(client, nwStream));
+                thread.Start();
+
+                bool keeponchatting = true;
+                while (keeponchatting)
+                {
+                    if(Console.In == null)
+                    {
+                       
+                    }
+                    //---send the text---
+                    string potato = Console.ReadLine();
+                    Console.WriteLine("Sending : " + potato);
+                    byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(potato);
+                    nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+                    
+                }
 
                 //---read back the text---
+               
+                Console.ReadLine();
+                //Client();
+                //client.Close();
+            }
+             void ReadChatC(TcpClient client, NetworkStream nwStream)
+            {
                 byte[] bytesToRead = new byte[client.ReceiveBufferSize];
                 int bytesRead = nwStream.Read(bytesToRead, 0, client.ReceiveBufferSize);
                 Console.WriteLine("Received : " + Encoding.ASCII.GetString(bytesToRead, 0, bytesRead));
-                Console.ReadLine();
-                client.Close();
             }
+
         }
 
         
+
         
+
+
     }
 }
